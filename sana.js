@@ -1,25 +1,34 @@
 const cohere = require('cohere-ai');
 var express = require('express');
 var fs = require('fs');
-cohere.init('x1ADgcbwcLpA3DQmP9iNhCogNIZz3w5qZr6EdPBi');
+var url = require('url');
 
+cohere.init('x1ADgcbwcLpA3DQmP9iNhCogNIZz3w5qZr6EdPBi');
 var app = express();
+app.set('view engine', 'ejs');
+//const inRef = useRef(null);
 
 app.get('/sentiment', function(req,res){
 	const inputs = ["this is me"];
 	const examples = [{"text": "this is an example", "label": "neutral"}, {"text": "I hate myself", "label": "self deprivating"}, {"text": "wtf is going on", "label": "self deprivating"}, {"text": "yessir", "label": "neutral"}];
-	res.status(200).send("OK");
-	sentimentGen(inputs, examples);
+		var p = url.parse(req.url, true).query;
+		var curl = p.input;
+		console.log(curl);
+		let data = cohere.classify({
+			model: 'large',
+			inputs: [curl],
+			examples: examples,
+			}).then((data) => (res.status(200).send(data)));
 })
-
-async function sentimentGen(input,examples){
-	let data = await cohere.classify({
+app.post('/sentimentpost', function(req,res){
+	const examples = [{"text": "this is an example", "label": "neutral"}, {"text": "I hate myself", "label": "self deprivating"}, {"text": "wtf is going on", "label": "self deprivating"}, {"text": "yessir", "label": "neutral"}];
+	console.log(req.headers.input);
+	cohere.classify({
 		model: 'large',
-		inputs: input,
+		inputs: [JSON.stringify(req.headers.input)],
 		examples: examples,
-});
-console.log(data.body.classifications);
-}
+		}).then((data) => (res.status(200).send(data)));
+})
 var server = app.listen(8008, function(){
 	console.log(server.address());
 });
