@@ -29,7 +29,7 @@ app.post('/sentimentpost', bodyparse,function(req,res){
 	fs.readFile('./examplesless.json', 'utf-8', (err, examples) =>{
 		//console.log(JSON.parse(examples)[29]);
 		cohere.classify({
-			model: 'large',
+			model: '60e26399-f5ee-4afd-8211-93046db90dc2-ft',
 			inputs: [JSON.stringify(req.body['input'])],
 			examples: JSON.parse(examples),
 			}).then((data) => (res.status(200).send(data)))})
