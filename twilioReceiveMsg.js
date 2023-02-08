@@ -16,16 +16,20 @@ const app = express();
 app.post('/', urlencodedParser, (req, res) => {
     const twiml = new MessagingResponse();
     console.log(req.body['Body']);
-    request.post("http://6.tcp.ngrok.io:16417/sentimentpost", {"form": {"input": req.body['Body']}}, (err, CohereRepsonse, body)=>{
+    request.post("http://8.tcp.ngrok.io:10526/sentimentpost", {"form": {"input": req.body['Body']}}, (err, CohereRepsonse, body)=>{
         predictionResult = JSON.parse(body).body.classifications[0].prediction;
         console.log("Prediction: ", predictionResult);
         const resp = fs.readFileSync('./responsesindexlist.json');
             let allresp = JSON.parse(resp);
             var respindex = allresp.index[predictionResult];
+            var chosenResponse;
             //console.log(allresp.responses[26]['suicide']);
+            if (respindex != null){
             var arrayLength = allresp.responses[respindex][predictionResult].length;
             var chosenIndex = getRandomInt(arrayLength);
-            var chosenResponse = allresp.responses[respindex][predictionResult][chosenIndex];
+            chosenResponse = allresp.responses[respindex][predictionResult][chosenIndex];
+
+}else{chosenResponse = "Sorry I can't help with thris right now, my training data is still very small";}
             //allresp.index.array.forEach(element => {
             twiml.message(chosenResponse);
             res.writeHead(200, {'Content-Type': 'text/xml'});
