@@ -16,7 +16,7 @@ const app = express();
 app.post('/', urlencodedParser, (req, res) => {
     const twiml = new MessagingResponse();
     console.log(req.body['Body']);
-    request.post("http://8.tcp.ngrok.io:10526/sentimentpost", {"form": {"input": req.body['Body']}}, (err, CohereRepsonse, body)=>{
+    request.post("http://127.0.0.1:8008/sentimentpost", {"form": {"input": req.body['Body']}}, (err, CohereRepsonse, body)=>{
         predictionResult = JSON.parse(body).body.classifications[0].prediction;
         console.log("Prediction: ", predictionResult);
         const resp = fs.readFileSync('./responsesindexlist.json');

@@ -3,7 +3,8 @@ var express = require('express');
 var fs = require('fs');
 var url = require('url');
 var bodyparser = require("body-parser")
-fs.readFile('./secret.json', 'utf-8', (err, read)=>{cohere.init(JSON.parse(read).cohereAuth);});
+//fs.readFile('./secret.json', 'utf-8', (err, read)=>{cohere.init(JSON.parse(read).cohereAuth);});
+cohere.init(process.env.COHERE_AUTH);
 var jsonparse = bodyparser.json();
 var bodyparse = bodyparser.urlencoded({extended: false});
 var app = express();
